@@ -37,7 +37,6 @@ test-backend:
 deploy:
   stage: deploy
   script:
-    - echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG
-    - kubectl apply -f infra/k8s/
+    - docker-compose -f infra/docker/docker-compose.yml up -d
   tags:
-    - kubernetes
+    - docker
