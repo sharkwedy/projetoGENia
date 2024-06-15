@@ -1,0 +1,43 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - docker:20.10.7-dind
+
+before_script:
+  - docker info
+
+build-backend:
+  stage: build
+  script:
+    - docker build -t backend:latest ./backend
+  tags:
+    - docker
+
+build-frontend:
+  stage: build
+  script:
+    - docker build -t frontend:latest ./frontend
+  tags:
+    - docker
+
+test-backend:
+  stage: test
+  script:
+    - docker run --rm backend:latest go test ./...
+  tags:
+    - docker
+
+deploy:
+  stage: deploy
+  script:
+    - echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG
+    - kubectl apply -f infra/k8s/
+  tags:
+    - kubernetes
