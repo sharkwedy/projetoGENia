@@ -9,10 +9,9 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api/subscriptions", CreateSubscription).Methods("POST")
+	r.HandleFunc("/api/subscriptions/{id}", GetSubscription).Methods("GET")
+	r.HandleFunc("/api/subscriptions/{id}", UpdateSubscription).Methods("PUT")
+	r.HandleFunc("/api/subscriptions/{id}", DeleteSubscription).Methods("DELETE")
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-func CreateSubscription(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Subscription created!"))
 }
